@@ -1,6 +1,10 @@
 # Calling various libraries
 library(tidyverse)
 
+###############
+## PROBLEM 2 ##
+###############
+
 # Importing the text data into a vector
 raw_file <- readLines(con = "http://www.sao.ru/lv/lvgdb/article/suites_dw_Table1.txt")
 
@@ -20,6 +24,9 @@ colnames(data) <- header
 write.table(raw_file[1:(sep_line-2)], # Using sep_line as a reference for the interval of lines
             file = "suites_dw_descriptions.txt", sep = "\t",row.names = FALSE, quote=FALSE)
 
+###############
+## PROBLEM 3 ##
+###############
 
 # Plotting the distribution of the m_b variable which tells us the absolute magnitude of the galaxy
 # the lower the value the bigger is the magnitude of the respective galaxy
@@ -31,17 +38,22 @@ data %>%
                  colour="black", fill="white") +
   geom_density(alpha=.2, fill="#FF6666") +
   geom_vline(aes(xintercept=mean(m_b, na.rm=T)),# Adding mean and ignoring NA values
-             color="red", linetype="dashed", size=1)
+             color="red", linetype="dashed", size=1) +
+  ggtitle("Distribution of the m_b variable") +
+  xlab("m_b (Absolute magnitude, lower value = bigger magnitude)")
 
 # It can be seen that that the observations of the variable are much less dense in the -5,0 interval
 # of observations which does point at the under-representation of the smaller magnitude galaxies,
-# furthermore the distribution of the variable seems to be skewered to the left and does not seem to
+# furthermore the distribution of the variable seems to be skewered to the right and does not seem to
 # follow a normal distribution Which is confirmed when we run the Shapiro-Wilk test where we can 
 # reject h0 (w = 0.975, p < 0.01)
 shapiro.test(data$m_b)
 
-# If we look at the mean its value is -13.73 which coincides with the lack of smaller
-# magnitude observations. 
+# If we look at the quantiles the median has a value of -13.73 and the 3rd quantile lies at the value of
+# -11,90,which coincides with the lack of smaller magnitude observations. 
 summary(data$m_b)
+
+# Since the magnitude of the galaxies is measured in the luminosity they emit the lack of lower
+# magnitude galaxies could be a result of being "hidden" by larger and brighter galaxies.
  
 
